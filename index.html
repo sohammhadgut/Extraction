@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagram Label Extractor</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Serif+Display&family=Manrope:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <header class="site-header">
+        <div class="logo"><span class="logo-icon">⬡</span><span class="logo-text">LabelAI</span></div>
+        <div class="header-tagline">Diagram Label & Keyword Extractor</div>
+        <div class="status-pill" onclick="loadSavedDiagrams()">
+            <span class="pill-dot"></span><span id="db-label">Load saved</span>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ── UPLOAD ── -->
+        <section class="card card-upload">
+            <div class="card-header">
+                <span class="step-badge">01</span>
+                <div>
+                    <h2>Upload Diagram</h2>
+                    <p class="card-sub">Upload any handwritten science diagram to extract its labels</p>
+                </div>
+            </div>
+            <div class="name-row">
+                <label class="field-label" for="diagramName">Diagram name:</label>
+                <input type="text" id="diagramName" class="name-input"
+                    placeholder="e.g. Human Eye, Leaf, Heart, Photosynthesis">
+            </div>
+            <div class="upload-zone" id="uploadZone" ondragover="handleDragOver(event)"
+                ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'diagramImage')">
+                <div class="upload-icon">🖼</div>
+                <p>Drag & drop or <label for="diagramImage" class="browse-link">browse</label></p>
+                <p class="upload-hint">JPG, PNG — handwritten or printed diagram</p>
+                <input type="file" id="diagramImage" accept="image/*" onchange="previewImage(this,'uploadPreview')">
+            </div>
+            <img id="uploadPreview" class="preview-img hidden" alt="Preview">
+            <button class="btn btn-primary" onclick="uploadDiagram()">
+                <span class="btn-icon">⬆</span> Extract Labels
+            </button>
+            <div id="uploadStatus" class="status-msg hidden"></div>
+        </section>
+
+        <!-- ── LABEL EDITOR (shown after extraction) ── -->
+        <section class="card card-editor hidden" id="editorCard">
+            <div class="card-header">
+                <span class="step-badge">02</span>
+                <div>
+                    <h2 id="editorTitle">Extracted Labels</h2>
+                    <p class="card-sub">Edit labels · manage keywords · generate AI synonyms</p>
+                </div>
+                <button class="btn-refresh" onclick="loadLabelEditor()" title="Reload">↻</button>
+            </div>
+
+            <!-- Diagram image reference -->
+            <div class="preview-reference hidden" id="previewReference">
+                <span class="preview-ref-label">📄 Diagram Reference</span>
+                <img id="referenceImg" class="reference-img" alt="Diagram">
+            </div>
+
+            <div id="labelEditorList" class="editor-list"></div>
+
+            <div class="editor-actions">
+                <button class="btn btn-save" onclick="saveAllEdits()">💾 Save</button>
+                <button class="btn btn-add" onclick="addNewLabel()">＋ Add Label</button>
+                <button class="btn btn-ai-batch" onclick="generateAllAI()">✨ AI Keywords All</button>
+            </div>
+            <div id="editorStatus" class="status-msg hidden"></div>
+        </section>
+
+        <!-- ── SAVED DIAGRAMS ── -->
+        <section class="card card-saved">
+            <div class="card-header">
+                <span class="step-badge">📚</span>
+                <div>
+                    <h2>Saved Diagrams</h2>
+                    <p class="card-sub">Previously extracted diagrams</p>
+                </div>
+                <button class="btn-refresh" onclick="loadSavedDiagrams()">↻</button>
+            </div>
+            <div id="savedList" class="saved-list">
+                <p class="empty-msg">No diagrams saved yet.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p id="loadingMsg">Extracting labels...</p>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
